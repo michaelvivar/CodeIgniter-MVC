@@ -1,14 +1,22 @@
 <?php
 
-function array_merge_unique()
+function array_merge_unique($array1 = array(), $array2 = array(), $array3 = array())
 {
-	$args = func_get_args();
-	$array = array();
-	foreach ($args as $arg)
+	foreach ($array2 as $key => $val)
 	{
-		$array = array_unique(array_merge($array, $arg));
+		if ( ! isset($array1[$key]))
+		{
+			$array1[$key] = $val;
+		}
 	}
-	return $array;
+	foreach ($array3 as $key => $val)
+	{
+		if ( ! isset($array1[$key]))
+		{
+			$array1[$key] = $val;
+		}
+	}
+	return $array1;
 }
 
 function set_attributes($key, $val)
@@ -24,12 +32,25 @@ function get_attributes($attributes)
 	return $space . implode(' ', $mapped);
 }
 
+function get_options($options, $value = FALSE)
+{
+	$html = '';
+	foreach ($options as $key => $val)
+	{
+		$attr = '';
+		if ($key == $value){  $attr = ' selected="selected" '; }
+		$html .= '<option' . $attr . 'value="' . $key . '">' . $val . '</option>';
+	}
+	return $html;
+}
+
 class Html
 {
 	public $elements = array();
 	
 	public function add($element)
 	{
+		$element->attributes['name'] = $element->name;
 		$this->elements[$element->name] =& $element;
 		return $element;
 	}
@@ -39,17 +60,35 @@ class Html
 		return isset($this->elements[$name]) ? $this->elements[$name] : FALSE;
 	}
 	
-	public function input($name, $attributes = array())
+	public function input($name = FALSE, $attributes = array())
 	{
+		if ($name === FALSE) { return; }
 		if ( ! isset($this->elements[$name]))
 		{
-			$attribute = array_merge_unique($attributes, array('name' => $name));
+			$attribute = array_merge_unique($attributes, array('name' => $name), array('type' => 'text'));
 		}
 		else
 		{
 			$attribute = array_merge_unique($this->get($name)->attribute(), $attributes, array('type' => 'text'));
 		}
 		echo '<input' . get_attributes($attribute) . '/>';
+	}
+	
+	public function select($name = FALSE, $options = array(), $value = FALSE, $attributes = array())
+	{
+		if ($name === FALSE) { return; }
+		if ( ! isset($this->elements[$name]))
+		{
+			$attribute = array_merge_unique($attributes, array('name' => $name));
+			$option = is_array($options) ? $options : array();
+		}
+		else
+		{
+			$attribute = array_merge_unique($this->get($name)->attribute(), $attributes);
+			$option = $this->get($name)->options;
+			$value = $this->get($name)->value;
+		}
+		echo '<select' . get_attributes($attribute) . '>' . get_options($option, $value) . '</select>';
 	}
 }
 
@@ -63,7 +102,7 @@ class Element
 		$this->name = $name;
 	}
 	
-	public function attribute()
+	public function attribute(/* [string $name], [string $name, string $value], [array $attributes], [NULL] */)
 	{
 		$args = func_get_args();
 		if ( ! isset($args[0]))
@@ -98,7 +137,7 @@ class InputField extends Element
 	public $options = array();
 	public $validations = array();
 	
-	public function validation()
+	public function validation(/* [string $name], [string $name, string $value], [array $validations], [NULL] */)
 	{
 		$args = func_get_args();
 		if ( ! isset($args[0]))
