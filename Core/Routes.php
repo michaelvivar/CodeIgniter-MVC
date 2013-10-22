@@ -15,7 +15,7 @@ class Routes
 		new Main($this);
 	}
 	
-	function segments($segments)
+	private function segments($segments)
 	{
 		foreach ($segments as $segment)
 		{
@@ -27,19 +27,19 @@ class Routes
 		return $this;
 	}
 	
-	function controller()
+	private function controller()
 	{
 		$this->controller = ucwords(strtolower((isset($this->segments[0])) ? $this->segments[0] : $this->controller));
 		return $this;
 	}
 	
-	function action()
+	private function action()
 	{
 		$this->action = ucwords(strtolower((isset($this->segments[1])) ? $this->segments[1] : $this->action));
 		return $this;
 	}
 	
-	function params()
+	private function params()
 	{
 		if (count($this->segments) > 2)
 		{
