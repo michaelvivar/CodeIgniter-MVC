@@ -11,6 +11,6 @@ class Home extends Controller
 	function Index()
 	{
 		$form = new LoginFormModel();
-		Response::Page('Home', array('form' => $form), $page);
+		Response::Page('Home/Index', array('form' => $form), $page);
 	}
 }
