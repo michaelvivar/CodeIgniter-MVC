@@ -10,7 +10,7 @@ class Home extends Controller
 {
 	function Index()
 	{
-		$this->form = new LoginFormModel();
-		Page::View('Home/Index');
+		$form = new LoginFormModel();
+		Response::Page('Home', array('form' => $form), $page);
 	}
 }
