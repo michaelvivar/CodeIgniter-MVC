@@ -4,7 +4,7 @@ namespace App\Lib;
 
 class Page
 {
-	private $_template = 'shared/layout';
+	private $_template = 'Includes/Layout';
 	private $_title = '';
 	private $_content = FALSE;
 	
