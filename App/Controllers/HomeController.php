@@ -6,7 +6,7 @@ use Core\Controller;
 use App\Lib\Response\Page;
 use App\Models\User\LoginFormModel;
 
-class Home extends Controller
+class HomeController extends Controller
 {
 	function Index()
 	{
